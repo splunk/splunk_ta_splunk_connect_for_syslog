@@ -25,7 +25,7 @@ class dockerExec extends Exec {
 class templateExec extends dockerExec {
     void settemplateFile(String templateFile) {
         dockerCommand(
-         '-v', "${projectLoc.projectDir}/package:/work",
+         '-v', "${projectLoc.projectDir}:/work",
           'hairyhenderson/gomplate',
            '-f', "/work/${templateFile}.tmpl", '-o', "/work/${templateFile}"
         )
@@ -85,7 +85,7 @@ task templateAppManifest(type: templateExec) {
     projectLoc=project
     buildVersion =  gitVersion.name
 
-    templateFile = 'app.manifest'
+    templateFile = 'package/app.manifest'
 }
 task templateAppconf(type: templateExec) {
     inputs.files ("package/default/app.conf.tmpl" )
@@ -94,7 +94,7 @@ task templateAppconf(type: templateExec) {
     projectLoc=project
     buildVersion = gitVersion.name
 
-    templateFile = 'default/app.conf'
+    templateFile = 'package/default/app.conf'
 }
 
 
