@@ -32,7 +32,7 @@ jobs:
       - checkout
 #      - setup_remote_docker:
 #          docker_layer_caching: true
-      - docker/install-docker
+      #- docker/install-docker
       # Download and cache dependencies
       - restore_cache:
           keys:
