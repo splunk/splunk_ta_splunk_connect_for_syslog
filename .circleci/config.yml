@@ -89,7 +89,7 @@ workflows:
     jobs:
       - build
 
-  publish-tag:
+  build-tag:
     jobs:
       - build:
           filters:
@@ -97,7 +97,7 @@ workflows:
               only: /^\d*\.\d*\.\d*.*$/
             branches:
               ignore: /.*/
-      - build:
+      - publish-tag:
           filters:
             tags:
               only: /^\d*\.\d*\.\d*.*$/
