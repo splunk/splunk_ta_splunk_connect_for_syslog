@@ -11,8 +11,7 @@ orbs:
 jobs:
   build:
     docker:
-      # specify the version you desire here
-      - image: circleci/openjdk:8-jdk
+      - image: circleci/buildpack-deps:18.04
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
