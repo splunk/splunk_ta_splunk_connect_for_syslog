@@ -54,6 +54,7 @@ jobs:
           docker-username: GITHUB_USER
           docker-password: GITHUB_TOKEN
       - run: docker pull docker.pkg.github.com/rfaircloth-splunk/splunk-packaging-toolkit/splunk-packaging-toolkit:latest
+      - run: mkdir -p test-results
       - run: ./gradlew testAppInspect
       - store_test_results:
           path: test-results
