@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "1.0.0",
+  "info": {
+    "title": "{{- getenv "SPLUNK_BUILD_APP_TITLE" "TA IN DEV UNKNOWN"}}",
+    "id": {
+      "group": null,
+      "name": "{{- getenv "SPLUNK_BUILD_APP_NAME" "TA_UNKNOWN"}}",
+      "version": "{{- getenv "SPLUNK_BUILD_VERSION" "0.1.0"}}"
+    },
+    "author": [
+      {
+        "name": "{{- getenv "SPLUNK_BUILD_AUTHOR" "unknown"}}",
+        "email": "{{- getenv "SPLUNK_BUILD_EMAIL" "support@splunk.com"}}",
+        "company": "{{- getenv "SPLUNK_BUILD_APP_COMPANY" "splunk"}}"
+      }
+    ],
+    "releaseDate": null,
+    "description": "{{- getenv "SPLUNK_BUILD_APP_DESCRIPTION" "TA IN DEV UNKNOWN"}}",
+    "classification": {
+      "intendedAudience": null,
+      "categories": [],
+      "developmentStatus": null
+    },
+    "commonInformationModels": null,
+    "license": {
+      "name": "{{- getenv "SPLUNK_BUILD_APP_LICENSE_NAME" "Splunk EULA"}}",
+      "text": null,
+      "uri": "{{- getenv "SPLUNK_BUILD_APP_URI" "LICENSE"}}"
+    },
+    "privacyPolicy": {
+      "name": null,
+      "text": null,
+      "uri": null
+    },
+    "releaseNotes": {
+      "name": null,
+      "text": null,
+      "uri": null
+    }
+  },
+  "dependencies": {
+  },
+  "tasks": [],
+  "inputGroups": {
+  },
+  "incompatibleApps": {
+  },
+  "platformRequirements": {
+    "splunk": {
+      "Enterprise": "*"
+    }
+  }
+}

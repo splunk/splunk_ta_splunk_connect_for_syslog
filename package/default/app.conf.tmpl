@@ -1,0 +1,20 @@
+# this add-on is powered by splunk Add-on builder
+[install]
+state_change_requires_restart = true
+build = 2
+
+[launcher]
+author = {{- getenv "SPLUNK_BUILD_AUTHOR" "unknown"}}
+version = {{- getenv "SPLUNK_BUILD_VERSION" "0.1.0"}}
+
+[ui]
+is_visible = 0
+label = {{- getenv "SPLUNK_BUILD_APP_TITLE" "TA IN DEV UNKNOWN"}}
+docs_section_override = AddOns:released
+
+[package]
+id = {{- getenv "SPLUNK_BUILD_APP_NAME" "TA_UNKNOWN"}}
+
+[id]
+name =  {{- getenv "SPLUNK_BUILD_APP_NAME" "TA_UNKNOWN"}}
+version = {{- getenv "SPLUNK_BUILD_VERSION" "0.1.0"}}
