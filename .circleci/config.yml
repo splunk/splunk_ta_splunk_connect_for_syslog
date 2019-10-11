@@ -98,6 +98,8 @@ workflows:
             branches:
               ignore: /.*/
       - publish-tag:
+          requires:
+            - build
           filters:
             tags:
               only: /^\d*\.\d*\.\d*.*$/
