@@ -53,8 +53,53 @@ jobs:
           registry: $REGISTRY
           docker-username: GITHUB_USER
           docker-password: GITHUB_TOKEN
-      - run: docker pull docker.pkg.github.com/rfaircloth-splunk/splunk-packaging-toolkit/splunk-packaging-toolkit:latest
       - run: mkdir -p test-results
       - run: ./gradlew testAppInspect
       - store_test_results:
           path: test-results
+      - persist_to_workspace:
+          root: build
+          paths:
+            - package
+
+  publish-tag:
+      docker:
+        - image: circleci/buildpack-deps:18.04
+      steps:
+        - go/install
+        - attach_workspace:
+            at: /tmp/package
+        - run: ls -l /tmp
+        - run: ls -l /tmp/package
+        - run:
+            name: "Publish edge on GitHub"
+            command: |
+              PATH=$PATH:/usr/local/go/bin
+              go get -v -u github.com/tcnksm/ghr
+              CIRCLE_BRANCH_CLEAN=$(echo ${CIRCLE_BRANCH} | sed 's/[^a-zA-Z0-9\._-]//g')
+              if [ -n "${CIRCLE_TAG}" ]; then DOCKER_TAG=${CIRCLE_TAG}; else DOCKER_TAG="${CIRCLE_BRANCH_CLEAN}"; fi
+              if [ -n "${CIRCLE_TAG}" ]; then VERSION=${CIRCLE_TAG}; else VERSION="${CIRCLE_BRANCH_CLEAN}@${CIRCLE_SHA1:0:6}"; fi
+              $HOME/go/bin/ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete $VERSION /tmp/package/
+        - store_artifacts:
+            path: /tmp/package/
+
+workflows:
+  version: 2
+  build-branches:
+    jobs:
+      - build
+
+  publish-tag:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /^\d*\.\d*\.\d*.*$/
+            branches:
+              ignore: /.*/
+      - build:
+          filters:
+            tags:
+              only: /^\d*\.\d*\.\d*.*$/
+            branches:
+              ignore: /.*/
