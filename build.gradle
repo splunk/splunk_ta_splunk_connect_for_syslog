@@ -15,6 +15,7 @@ class dockerExec extends Exec {
 
     void dockerCommand(Object... arguments) {
         executable 'docker'
+        println "in projectDir ${projectLoc.projectDir}"
         args = ['run', '-i', '--rm',
           '--env-file', 'gradle.properties',
           '-e', "SPLUNK_BUILD_VERSION=${buildVersion}" ] + arguments.toList()
@@ -24,7 +25,7 @@ class dockerExec extends Exec {
 class templateExec extends dockerExec {
     void settemplateFile(String templateFile) {
         dockerCommand(
-         '-v', "${projectLoc.projectDir}/package:/work",
+         '-v', "${projectLoc.projectDir}:/work",
           'hairyhenderson/gomplate',
            '-f', "/work/${templateFile}.tmpl", '-o', "/work/${templateFile}"
         )
@@ -46,14 +47,13 @@ class slimExec extends dockerExec {
 class appInspectExec extends dockerExec {
     String packageLocation
     String buildVersion
-    String packageVersion
     void setpackageName(String packageName) {
         dockerCommand(
           '-v', "${projectLoc.projectDir}/build/package:/work",
           '-v', "${projectLoc.projectDir}/test-reports:/test-reports",
          'docker.pkg.github.com/rfaircloth-splunk/splunk-app-inspect/splunk-app-inspect:latest',
           "inspect",
-          "/work/${packageLocation}/${packageName}-${packageVersion}.tar.gz",
+          "/work/${packageLocation}/${packageName}-${buildVersion}.tar.gz",
           "--data-format", "junitxml",
           "--output-file", "/test-reports/${packageName}-appapproval.xml",
           "--excluded-tags", "manual",
@@ -85,7 +85,7 @@ task templateAppManifest(type: templateExec) {
     projectLoc=project
     buildVersion =  gitVersion.name
 
-    templateFile = 'app.manifest'
+    templateFile = 'package/app.manifest'
 }
 task templateAppconf(type: templateExec) {
     inputs.files ("package/default/app.conf.tmpl" )
@@ -94,7 +94,7 @@ task templateAppconf(type: templateExec) {
     projectLoc=project
     buildVersion = gitVersion.name
 
-    templateFile = 'default/app.conf'
+    templateFile = 'package/default/app.conf'
 }
 
 
@@ -112,17 +112,18 @@ task copyPackageContents(type: Copy, dependsOn: "setupTemplates") {
 
 
 task copyReadme(type: Copy) {
-    from "README"
+    from 'README.md'
     into "$buildDir/app/${SPLUNK_BUILD_APP_NAME}"
 }
+
 task copyLICENSE(type: Copy) {
     from 'LICENSE'
     into "$buildDir/app/${SPLUNK_BUILD_APP_NAME}"
 }
 
 
-task build (dependsOn: ['copyPackageContents', 'copyReadme' ,'copyLICENSE' ] ) {
-    println 'in task pabuildckage'
+task build (dependsOn: ['copyPackageContents', 'copyReadme' ,'copyLICENSE','copyReadme' ] ) {
+    println 'in task build'
 }
 
 task packageSplunkBase(type: slimExec,  dependsOn: ["build"]) {
@@ -145,7 +146,7 @@ task testAppInspect(type: appInspectExec, dependsOn: ['bundle']) {
 
     projectLoc=project
     buildVersion = gitVersion.name
-    packageVersion = gitVersion.name
+
     packageLocation = "splunkbase"
 
     packageName = "${SPLUNK_BUILD_APP_NAME}"
