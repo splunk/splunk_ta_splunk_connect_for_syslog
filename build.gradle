@@ -46,13 +46,14 @@ class slimExec extends dockerExec {
 class appInspectExec extends dockerExec {
     String packageLocation
     String buildVersion
+    String packageVersion
     void setpackageName(String packageName) {
         dockerCommand(
           '-v', "${projectLoc.projectDir}/build/package:/work",
           '-v', "${projectLoc.projectDir}/test-reports:/test-reports",
          'docker.pkg.github.com/rfaircloth-splunk/splunk-app-inspect/splunk-app-inspect:latest',
           "inspect",
-          "/work/${packageLocation}/${packageName}-${buildVersion}.tar.gz",
+          "/work/${packageLocation}/${packageName}-${packageVersion}.tar.gz",
           "--data-format", "junitxml",
           "--output-file", "/test-reports/${packageName}-appapproval.xml",
           "--excluded-tags", "manual",
@@ -144,6 +145,7 @@ task testAppInspect(type: appInspectExec, dependsOn: ['bundle']) {
 
     projectLoc=project
     buildVersion = gitVersion.name
+    packageVersion = gitVersion.name
     packageLocation = "splunkbase"
 
     packageName = "${SPLUNK_BUILD_APP_NAME}"
