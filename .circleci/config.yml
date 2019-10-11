@@ -52,5 +52,4 @@ jobs:
           registry: $REGISTRY
           docker-username: GITHUB_USER
           docker-password: GITHUB_TOKEN
-      - run: ./gradlew build
       - run: ./gradlew testAppInspect
