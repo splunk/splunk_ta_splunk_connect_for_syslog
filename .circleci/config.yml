@@ -47,5 +47,5 @@ jobs:
 
       # run tests!
       - run: ls -l
-      - run: ./gradlew build
+      - run: ./gradlew build --debug
       - run: ./gradlew testAppInspect
