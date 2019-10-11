@@ -15,7 +15,7 @@ class dockerExec extends Exec {
 
     void dockerCommand(Object... arguments) {
         executable 'docker'
-        println 'in projectDir ${projectLoc.projectDir}'
+        println "in projectDir ${projectLoc.projectDir}"
         args = ['run', '-i', '--rm',
           '--env-file', 'gradle.properties',
           '-e', "SPLUNK_BUILD_VERSION=${buildVersion}" ] + arguments.toList()
